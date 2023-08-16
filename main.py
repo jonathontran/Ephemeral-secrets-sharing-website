@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 import random
 import string
@@ -6,6 +6,7 @@ import hashlib
 
 app = Flask(__name__)
 
+#Establish DB connection
 def create_connection():
     connection = mysql.connector.connect(
         host="localhost",       
@@ -15,6 +16,7 @@ def create_connection():
     )
     return connection
 
+#Utility functions
 def create_code():
     characters = string.ascii_uppercase + string.digits
     code = ''.join(random.choice(characters) for i in range(6))
@@ -30,9 +32,27 @@ def encrypt(input):
     sha256_hash.update(input.encode('utf-8'))
     return sha256_hash.hexdigest()
 
+#Web interface
+@app.route('/submit', methods=['POST'])
+def submit():
+    secret = request.form['secretForm']
+    code = create_code()
+    pw = create_password()
+
+    #do DB stuff
+
+    return redirect(url_for('home', url=f"localhost:5000/{code}"))
+
+@app.route('/submitCode', methods=['POST'])
+def submitCode():
+    code = request.form['secretCode']
+
+    return redirect(code,code=code)
+
 @app.route('/')
 def home():
-    return render_template("index.html")
+    url = request.args.get('url')
+    return render_template("index.html", url=url)
 
 @app.route('/<code>')
 def code(code):
