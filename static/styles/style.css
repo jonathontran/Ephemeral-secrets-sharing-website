@@ -16,6 +16,31 @@
   border: 0;
 }
 
+.card {
+  border-color: rgb(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 40px;
+  width: 100%;
+}
+
+.card-title {
+  font-size: 30pt;
+}
+
+.card-subtitle {
+  font-size: 18pt;
+}
+
+.card-text {
+  font-size: 18pt;
+}
+
+#ephemeralSecretsLargeHeading {
+  font-size: 40pt;
+  font-weight: 500;
+  margin-bottom: 30px;
+}
+
 #secretSearchCodeBtn {
   margin-right: 30px;
 }
@@ -31,4 +56,20 @@
 
 #secretForm {
   height: 300px;
+}
+
+#createAnotherBtn {
+  margin-top: 30px;
+}
+
+#viewingSecretID {
+  margin-bottom: 30px;
+}
+
+#postSecretSubmitCard {
+ text-align: center;
+}
+
+#secretText {
+  margin: 10px;
 }
