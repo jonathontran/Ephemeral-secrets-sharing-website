@@ -1,13 +1,23 @@
+.navbar {
+  margin-right: 30px;
+  margin-left: 30px;
+  margin-top: 10px;
+}
+
 .navbar-brand {
   font-size: 25pt;
-  padding-left: 30px;
   font-weight: 400;
+}
+
+.col {
+  margin-top: 50px;
 }
 
 .btn {
   font-size: 20pt;
   padding-left: 30px;
   padding-right: 30px;
+  border-radius: 40px;
 }
 
 .btn-primary {
@@ -21,6 +31,7 @@
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 40px;
   width: 100%;
+  margin-bottom: 30px;
 }
 
 .card-title {
@@ -35,31 +46,19 @@
   font-size: 18pt;
 }
 
+.form-check {
+  margin-top: 20px;
+}
+
 #ephemeralSecretsLargeHeading {
   font-size: 40pt;
   font-weight: 500;
   margin-bottom: 30px;
 }
 
-#secretSearchCodeBtn {
-  margin-right: 30px;
-}
-
-#enterSecretFormTitle {
-  font-size: 40pt;
-  font-weight: 500;
-}
-
-#secretSubmitForm {
-  margin-top: 50px;
-}
-
 #secretForm {
   height: 300px;
-}
-
-#createAnotherBtn {
-  margin-top: 30px;
+  border: 0;
 }
 
 #viewingSecretID {
@@ -72,4 +71,8 @@
 
 #secretText {
   margin: 10px;
+}
+
+#password {
+  border: 0;
 }
