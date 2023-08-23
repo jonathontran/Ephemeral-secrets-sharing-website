@@ -1,3 +1,14 @@
+.circle {
+  height: 980px;
+  width: 980px;
+  background-color: #75C4FA;
+  border-radius: 50%;
+  position: fixed;
+  bottom:-300px;
+  right:-600px;
+  background-attachment: fixed;
+}
+
 .navbar {
   margin-right: 30px;
   margin-left: 30px;
