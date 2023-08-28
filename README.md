@@ -1,5 +1,4 @@
 # Ephemeral-secrets-sharing-website HOW TO DOCKER???
-# JT HOT AND SEXY
 
 # INSTALL
 #   Install Docker Desktop on PC, make sure it's running
