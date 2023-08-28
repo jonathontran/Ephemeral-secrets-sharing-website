@@ -159,8 +159,7 @@ def viewSecret():
 #Home Page
 @app.route('/')
 def home():
-    url = request.args.get('url')
-    return render_template("index.html", url=url)
+    return render_template("index.html")
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
