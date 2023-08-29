@@ -12,12 +12,14 @@ app = Flask(__name__)
 
 SALT = base64.b64encode(b'GUDNQ5O70A0NQSXW')
 
+
 #DB functions - todo: error handling
 def create_connection():
-    connection = mysql.connector.connect(
-        host="localhost",       
+    connection = mysql.connector.connect(       
         user="root",    
-        password="ephemeral",
+        password="root",
+        host="db",
+        port="3306",
         database="ephemeralSecrets" 
     )
     return connection
@@ -27,14 +29,14 @@ def close_connection(connection):
 
 def insert_row(connection,url,expiry,password,secret,active):
     cursor = connection.cursor()
-    sql = f"insert into secret (url,expiry,password,secret,active) values ('{url}','{expiry}','{password}','{secret}',{active})"
+    sql = f"insert into user_secret (url,expiry,password,secret,active) values ('{url}','{expiry}','{password}','{secret}',{active})"
     cursor.execute(sql)
     connection.commit()
     cursor.close()
 
 def select_row(connection,code):
     cursor = connection.cursor()
-    sql = f"select * from secret where url = '{code}' order by ID desc"
+    sql = f"select * from user_secret where url = '{code}' order by ID desc"
     cursor.execute(sql)
     row = cursor.fetchone()
     cursor.close()
@@ -42,7 +44,7 @@ def select_row(connection,code):
 
 def delete_row(connection,url,password):
     cursor = connection.cursor()
-    sql = f"delete from secret where url='{url}' and password='{password}'"
+    sql = f"delete from user_secret where url='{url}' and password='{password}'"
     cursor.execute(sql)
     connection.commit()
     cursor.close()
