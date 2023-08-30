@@ -10,7 +10,7 @@
 }
 
 .col {
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .btn {
@@ -84,10 +84,6 @@
   margin: 10px;
 }
 
-#password {
-  border: 0;
-}
-
 #codesearch {
   width: 500px;
   margin-top: 15px;
@@ -96,4 +92,8 @@
 
 #codeinput {
   border: 0;
+}
+
+#expiryLabel {
+  margin-top: 15px;
 }
