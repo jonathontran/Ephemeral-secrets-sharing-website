@@ -2,3 +2,4 @@ Flask
 mysql-connector
 Fernet
 cryptography
+Flask-Limiter
