@@ -46,6 +46,7 @@ function checkForPastDate() {
     
     if(inputDate < currentDate){
         $("#expiryAlert").show();
+        return false;
     } else {
         return true;
     }
