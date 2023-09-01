@@ -9,6 +9,7 @@
   <link href= "../static/styles/style.css" rel="stylesheet">
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
   <script src="{{ url_for('static',filename='scripts/script.js') }}"></script>
   <script src="../static/scripts/script.js"></script>
 </head>
@@ -38,24 +39,28 @@
           <!-- Paste Secret Box -->
           <div class="card">
             <div class="card-body">
-              <textarea class="form-control shadow-none" id="secretForm" name="secretForm" rows="3" placeholder="PLEASE ENTER YOUR SECRET HERE..."></textarea>
+              <textarea class="form-control shadow-none" id="secretForm" name="secretForm" maxlength="10240" required="true" placeholder="PLEASE ENTER YOUR SECRET HERE..."></textarea>
             </div>
           </div>
 
-          <!-- Dropdown for Advanced Options -->
-            <div class="card card-body">
-              <!-- Password -->
-              <label class="form-label" for="password">Password</label>
-              <input id="password" name="password" class="form-control" aria-describedby="passwordHelpBlock" placeholder="P@ssword!">
+          <div class="card card-body">
+            <!-- Password -->
+            <label class="form-label" for="password">Password</label>
+            <input id="password" name="password" class="form-control" aria-describedby="passwordHelpBlock" maxlength="64" required="true" placeholder="P@ssword!">
 
-              <!-- Expiry -->
-              <label class="form-label" for="expiryDate" id="expiryLabel">Expiry</label>
-              <input type="date" name="expiryDate" id="date" class="form-control"/>
-             </div>
+            <!-- Expiry -->
+            <label class="form-label" for="expiryDate" id="expiryLabel">Expiry</label>
+            <input type="date" name="expiryDate" id="expiryDate" class="form-control"/>
+          </div>
+
+          <!-- Alert is hidden when the page loads thanks to jQuery -->
+          <div class="alert alert-warning" role="alert" id="expiryAlert">
+            Please enter a future date for the secret to expire.
+          </div>
 
           <!-- Submit Button -->
           <div class="d-grid gap-2">
-            <button class="btn btn-primary" type="submit">SUBMIT</button>
+            <button class="btn btn-primary" type="submit" onclick="checkForPastDate()">SUBMIT</button>
           </div>
         </form>
         <div class="circle"></div>
