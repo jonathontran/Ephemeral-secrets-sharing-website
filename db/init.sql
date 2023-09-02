@@ -11,3 +11,10 @@ CREATE TABLE `user_secret` (
  `active` tinyint(1) NOT NULL,
  PRIMARY KEY (`id`)
 );
+
+
+
+CREATE EVENT myevent
+    ON SCHEDULE EVERY 1 MINUTE
+    DO
+      UPDATE ephemeralSecrets.user_secret SET active = 'false' WHERE expiry_date > NOW();
