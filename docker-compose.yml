@@ -1,17 +1,39 @@
-version: "2"
+version: "3.8"
 services:
   app:
     build: ./app
-    links:
+    #image?
+    depends_on:
       - db
     ports:
       - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: ephemeralSecrets
+    links:
+      - db
+    volumes:
+      - ./:/src
 
   db:
-    image: mysql/mysql-server:8.0.23
+    image: mysql:8.0.23
+    #cap_add:
+    #  - SYS_NICE
+    restart: always
     ports:
       - "32000:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: root
+    #- MYSQL_DATABASE=ephemeralSecrets
+    - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - ./db:/docker-entrypoint-initdb.d/:ro
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db:/var/lib/mysql
+
+    #  OLD ONE: - ./db:/docker-entrypoint-initdb.d/:ro
+
+volumes:
+ db:
+   driver: local
