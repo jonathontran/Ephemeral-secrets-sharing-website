@@ -32,27 +32,32 @@ def create_connection():
 def close_connection(connection):
     connection.close()
 
-def insert_row(connection,url,expiry,password,SALT,secret,active):
+def insert_row(connection, url, expiry, password, SALT, secret, active):
     cursor = connection.cursor()
-    sql = f"insert into user_secret (url,expiry,password,SALT,secret,active) values ('{url}','{expiry}','{password}','{SALT}','{secret}',{active})"
-    cursor.execute(sql)
+    sql = "INSERT INTO user_secret (url, expiry, password, SALT, secret, active) VALUES (%s, %s, %s, %s, %s, %s)"
+    values = (url, expiry, password, SALT, secret, active)
+    cursor.execute(sql, values)
     connection.commit()
     cursor.close()
 
-def select_row(connection,code):
+
+def select_row(connection, code):
     cursor = connection.cursor()
-    sql = f"select * from user_secret where url = '{code}' order by ID desc"
-    cursor.execute(sql)
+    sql = "SELECT * FROM user_secret WHERE url = %s ORDER BY ID DESC"
+    values = (code,) #tuple with single element
+    cursor.execute(sql, values)
     row = cursor.fetchone()
     cursor.close()
     return row
 
-def delete_row(connection,url,password):
+def delete_row(connection, url, password):
     cursor = connection.cursor()
-    sql = f"delete from user_secret where url='{url}' and password='{password}'"
-    cursor.execute(sql)
+    sql = "DELETE FROM user_secret WHERE url = %s AND password = %s"
+    values = (url, password)
+    cursor.execute(sql, values)
     connection.commit()
     cursor.close()
+
 
 #Utility functions
 def create_code():
@@ -89,8 +94,14 @@ def derive_key_from(input,salt):
 #Secret Submission
 @app.route('/submit', methods=['POST'])
 def submit():
-    #TODO Check if code already exists
-    code = create_code() #generate random 6 character code
+    #Create unique code
+    connection = create_connection()
+    while True:
+        code = create_code() #generate random 6 character code
+        if select_row(connection,code) is None:
+            break
+    close_connection(connection)
+
     pw = request.form['password']
     expiryDate = request.form['expiryDate']
     pwhash = hash(pw) #SHA256 hash to store
@@ -113,7 +124,16 @@ def submit():
 def submitConfirmation():
     code = request.args.get('code')
 
-    return render_template("submitConfirmation.html", code=code)
+    connection = create_connection()
+    row = select_row(connection,code)
+    close_connection(connection)
+
+    #validate code to be exactly 6 characters, and exists in the database
+    if len(code) == 6 and row is not None:
+        return render_template("submitConfirmation.html", code=code)
+    else:
+        return redirect(url_for("home"))
+    
 
 
 
@@ -122,7 +142,7 @@ def submitConfirmation():
 
 
 #Secret Retreival
-@app.route('/submitCode', methods=['GET','POST'])
+@app.route('/submitCode', methods=['POST'])
 def submitCode():
     code = request.form['secretCode']
 
@@ -130,20 +150,33 @@ def submitCode():
 
 @app.route('/<code>', methods=['GET','POST'])
 def retrieveSecret(code):
-    #todo: validate code to prevent SQL injection
+    connection = create_connection()
+    row = select_row(connection,code)
+    close_connection(connection)
 
-    return render_template("retrieveSecret.html", code=code)
+    #validate code to be exactly 6 characters, and exists in the database
+    if len(code) == 6 and row is not None:
+        return render_template("retrieveSecret.html", code=code)
+    elif row[6] != '1':
+        return render_template("retrieveSecret.html", code=code, invalidCode="Code has expired")
+    else:
+        return render_template("retrieveSecret.html", code=code, invalidCode="Invalid Code - please try again")
+    
+    
 
 @app.route('/submitPassword', methods=['GET','POST'])
 @limiter.limit("3/minute")
 def viewSecret():
     code = request.args.get('code')
-    #todo: validate code to prevent SQL injection
-    pw = request.form['password']
+    pw = request.form.get('password')
 
     connection = create_connection()
     row = select_row(connection,code)
     close_connection(connection)
+
+    #validate code to be exactly 6 characters, and exists in the database
+    if not (len(code) == 6 and row is not None):
+        return redirect(url_for("retrieveSecret",code=code))
 
     secret = ''
     salt = ''
@@ -162,9 +195,9 @@ def viewSecret():
         return render_template("retrieveSecret.html", code=code, error="Incorrect password.")
 
     #delete secret after retrieval
-    connection = create_connection()
-    row = delete_row(connection,code,hash(pw))
-    close_connection(connection)
+    #connection = create_connection()
+    #delete_row(connection,code,hash(pw))
+    #close_connection(connection)
 
     return render_template("viewSecret.html", secret=secret,code=code)
 
