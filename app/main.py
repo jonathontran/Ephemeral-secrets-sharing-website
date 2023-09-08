@@ -58,6 +58,14 @@ def delete_row(connection, url, password):
     connection.commit()
     cursor.close()
 
+def update_flag(connection,url):
+    cursor = connection.cursor()
+    sql = "UPDATE user_secret SET active = 0 WHERE url = %s"
+    values = (url,)
+    cursor.execute(sql,values)
+    connection.commit()
+    cursor.close()
+
 
 #Utility functions
 def create_code():
@@ -194,10 +202,10 @@ def viewSecret():
     except (InvalidToken, Exception):
         return render_template("retrieveSecret.html", code=code, error="Incorrect password.")
 
-    #delete secret after retrieval
-    #connection = create_connection()
-    #delete_row(connection,code,hash(pw))
-    #close_connection(connection)
+    #update active flag secret after retrieval
+    connection = create_connection()
+    update_flag(connection,code)
+    close_connection(connection)
 
     return render_template("viewSecret.html", secret=secret,code=code)
 
