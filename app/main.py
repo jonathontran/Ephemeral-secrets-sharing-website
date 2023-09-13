@@ -8,6 +8,7 @@ import string
 import hashlib
 import base64
 import secrets
+import os
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -20,12 +21,11 @@ limiter = Limiter(app=app, key_func=get_remote_address)
 #DB functions - todo: error handling
 def create_connection():
     connection = mysql.connector.connect(       
-        user="root",    
-        password="root",
-        host="db",
-        #host="localhost",
-        port="3306",
-        database="ephemeralSecrets" 
+        user=os.environ.get("DB_USER"),    
+        password=os.environ.get("DB_PASSWORD"),
+        host=os.environ.get("DB_HOST"),
+        port=os.environ.get("DB_PORT"),
+        database=os.environ.get("DB_NAME") 
     )
     return connection
 

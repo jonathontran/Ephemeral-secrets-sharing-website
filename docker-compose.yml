@@ -1,39 +1,40 @@
 version: "3.8"
 services:
+  # Ephemeral app container.
   app:
     build: ./app
-    #image?
     depends_on:
       - db
     ports:
       - "5000:5000"
     environment:
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root
-      DB_NAME: ephemeralSecrets
+    # Use environment variables for security and modularity.
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
     links:
       - db
     volumes:
       - ./:/src
 
+  # Ephemeral database container.
   db:
     image: mysql:8.0.23
-    #cap_add:
-    #  - SYS_NICE
     restart: always
     ports:
       - "32000:3306"
     environment:
-    #- MYSQL_DATABASE=ephemeralSecrets
-    - MYSQL_ROOT_PASSWORD=root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    # Two volumes. 
+    # /init.sql initialises the DB, a non-root DB user for the app, and other vital DB functionality.
+    # /mysql is used to persist MySQL database data. 
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db:/var/lib/mysql
 
-    #  OLD ONE: - ./db:/docker-entrypoint-initdb.d/:ro
-
+  # Proxy container for HTTPS.
   proxy:
     image: nginx:1.19.10-alpine
     ports:
@@ -45,6 +46,7 @@ services:
     depends_on:
       - app
 
+# Define a named volume "db" using the local storage driver for data persistence
 volumes:
  db:
    driver: local
