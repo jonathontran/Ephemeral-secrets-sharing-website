@@ -16,3 +16,12 @@
 4. Find the image that you want to delete and run: docker rmi 'image_id' 
 5. Then rerun docker compose and bobs your uncle 
 
+# Updated:
+docker-compose rm -f
+docker-compose pull
+docker-compose up --build -d
+> Run the app/ run some tests
+docker-compose stop -t 1
+
+>if need be
+docker-compose down -v (to delete volumes)

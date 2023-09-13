@@ -21,7 +21,7 @@ services:
 
   # Ephemeral database container.
   db:
-    image: mysql:8.0.23
+    image: mysql:latest
     restart: always
     ports:
       - "32000:3306"
