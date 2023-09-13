@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, abort
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -158,6 +158,9 @@ def submitCode():
 
 @app.route('/<code>', methods=['GET','POST'])
 def retrieveSecret(code):
+    if code == 'favicon.ico':
+        abort(404)
+    
     connection = create_connection()
     row = select_row(connection,code)
     close_connection(connection)
@@ -165,7 +168,7 @@ def retrieveSecret(code):
     #validate code to be exactly 6 characters, and exists in the database
     if len(code) == 6 and row is not None:
         return render_template("retrieveSecret.html", code=code)
-    elif row[6] != '1':
+    elif row is not None and row[6] != '1':
         return render_template("retrieveSecret.html", code=code, invalidCode="Code has expired")
     else:
         return render_template("retrieveSecret.html", code=code, invalidCode="Invalid Code - please try again")
