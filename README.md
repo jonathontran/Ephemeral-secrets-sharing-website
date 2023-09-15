@@ -1,27 +1,49 @@
- # Ephemeral-secrets-sharing-website HOW TO DOCKER???
+ # Ephemeral Secrets Sharing Website
 
-# INSTALL
-1. Install Docker Desktop on PC, make sure it's running
+Ephemeral Secrets is a simple, intuitive, and secure method of sharing secrets with people across the internet. It has been developed with Docker to be simple and easy to deploy within any network.
 
-# RUNNING
-1. In a terminal (CMD etc) change your directory to the same directory that the *docker-compose.yml* is in 
-2. Run the command: docker compose up -d
-3. This will now show up in the docker application and you should be able to acces the application
-4. To stop it you can either stop it in Docker desktop or type: dokcer compose down
+![Screenshot](https://user-images.githubusercontent.com/12218728/264850653-58e39baa-e61f-4b99-8b85-826bae958775.png)
 
-# To make changes and update:
-1. Make your changes
-2. Stop the container (See above)
-3. Run the command: docker images
-4. Find the image that you want to delete and run: docker rmi 'image_id' 
-5. Then rerun docker compose and bobs your uncle 
+## Features
+- The sender is able to set the date which the secret will expire.
+- The secret requires a password before it can be viewed.
+- Secrets can only be unlocked and viewed once.
+- HTTPS connections are supported.
 
-# Updated:
-docker-compose rm -f
-docker-compose pull
-docker-compose up --build -d
-> Run the app/ run some tests
-docker-compose stop -t 1
+## Built With
+- Docker
+- Flask
+- Bootstrap
 
->if need be
-docker-compose down -v (to delete volumes)
+# Getting Started
+## Prerequisits
+To install and run Ephemeral Secrets, [Docker](https://docs.docker.com/engine/install/) must be installed.
+
+
+## Installation and Usage
+1. Clone the repo
+   
+   `git clone https://github.com/jonathontran/Ephemeral-secrets-sharing-website.git`
+2. Change Directory
+   
+    `cd Ephemeral-secrets-sharing-website`
+3. Run Docker
+
+    `docker compose up -d`
+
+4. Once Docker finishes provision the app, you can open a web browser and navigate to [localhost](https://localhost)
+
+5. Stop The Application/Docker
+
+    `docker compose down`
+
+# Contributers
+ - [Jonathon T](https://github.com/jonathontran)
+ - [Harry S](https://github.com/Podzee)
+ - [Jesse L](https://github.com/ProfessorNudelz)
+ - [Damien K](https://github.com/damienkleinn)
+ - [Mitch P](https://github.com/mphelan1)
+ - [Emily T]()
+
+## Acknowledgments
+The development team would like to acknowledge the project's client, Bad Security Inc, as well as the project's supervisor, Irene M.
