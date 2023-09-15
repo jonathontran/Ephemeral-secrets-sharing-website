@@ -16,7 +16,7 @@ Ephemeral Secrets is a simple, intuitive, and secure method of sharing secrets w
 - Bootstrap
 
 # Getting Started
-## Prerequisits
+## Prerequisites
 To install and run Ephemeral Secrets, [Docker](https://docs.docker.com/engine/install/) must be installed.
 
 
