@@ -16,6 +16,8 @@ services:
       DB_NAME: ${DB_NAME}
     volumes:
       - ./:/src
+    networks:
+      - ephemeral_secrets_network
 
   # Ephemeral database container.
   db:
@@ -32,10 +34,12 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db:/var/lib/mysql
+    networks:
+      - ephemeral_secrets_network
 
   # Proxy container for HTTPS.
   proxy:
-    image: nginx:1.19.10-alpine
+    image: nginx:latest
     ports:
       - 80:80
       - 443:443
@@ -44,8 +48,14 @@ services:
       - ./nginxproxy/certs:/etc/nginx/certs
     depends_on:
       - app
+    networks:
+      - ephemeral_secrets_network
 
 # Define a named volume "db" using the local storage driver for data persistence
 volumes:
- db:
-   driver: local
+  db:
+    driver: local
+
+networks: 
+  ephemeral_secrets_network:
+    driver: bridge
