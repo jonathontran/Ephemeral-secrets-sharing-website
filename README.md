@@ -43,7 +43,7 @@ To install and run Ephemeral Secrets, [Docker](https://docs.docker.com/engine/in
  - [Jesse L](https://github.com/ProfessorNudelz)
  - [Damien K](https://github.com/damienkleinn)
  - [Mitch P](https://github.com/mphelan1)
- - [Emily T]()
+ - [Emily T](https://github.com/emm1010)
 
 ## Acknowledgments
 The development team would like to acknowledge the project's client, Bad Security Inc, as well as the project's supervisor, Irene M.
