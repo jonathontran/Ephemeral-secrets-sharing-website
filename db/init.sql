@@ -17,8 +17,10 @@ Create a new user 'ephemeralappuser' and grant it CRUD permissions on the 'ephem
 
 Note SQL files don't have the capability to directly read environment variables. As such keep this file secure. 
 */
-CREATE USER 'ephemeralappuser'@'%' IDENTIFIED WITH 'mysql_native_password' BY 'password';
+CREATE USER 'ephemeralappuser'@'%' IDENTIFIED WITH 'caching_sha2_password' BY 'password';
 GRANT select, update, insert, delete ON ephemeralSecrets.* TO 'ephemeralappuser'@'%';
+DROP USER 'root'@'%';
+
 
 CREATE EVENT myevent
     ON SCHEDULE EVERY 1 MINUTE

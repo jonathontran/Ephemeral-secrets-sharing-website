@@ -14,8 +14,6 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-    links:
-      - db
     volumes:
       - ./:/src
 
@@ -26,6 +24,7 @@ services:
     ports:
       - "32000:3306"
     environment:
+      MYSQL_ROOT_HOST: localhost
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     # Two volumes. 
     # /init.sql initialises the DB, a non-root DB user for the app, and other vital DB functionality.
