@@ -12,16 +12,6 @@ CREATE TABLE `user_secret` (
  PRIMARY KEY (`id`)
 );
 
-/*
-Create a new user 'ephemeralappuser' and grant it CRUD permissions on the 'ephemeralSecrets' database
-
-Note SQL files don't have the capability to directly read environment variables. As such keep this file secure. 
-*/
-CREATE USER 'ephemeralappuser'@'%' IDENTIFIED WITH 'caching_sha2_password' BY 'password';
-GRANT select, update, insert, delete ON ephemeralSecrets.* TO 'ephemeralappuser'@'%';
-DROP USER 'root'@'%';
-
-
 
 /*
 create events to Set the flag to inactive after a record is expired and then scrub the password and secret value  
@@ -42,3 +32,17 @@ create events to Set the flag to inactive after a record is expired and then scr
       UPDATE ephemeralSecrets.user_secret 
       SET secret = '0', password = '0'
       WHERE active = 0;
+
+
+
+/*
+Create a new user 'ephemeralappuser' and grant it CRUD permissions on the 'ephemeralSecrets' database
+
+Note SQL files don't have the capability to directly read environment variables. As such keep this file secure. 
+*/
+CREATE USER 'ephemeralappuser'@'%' IDENTIFIED WITH 'caching_sha2_password' BY 'password';
+GRANT select, update, insert, delete, EVENT ON ephemeralSecrets.* TO 'ephemeralappuser'@'%';
+DROP USER 'root'@'%';
+
+
+
