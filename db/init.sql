@@ -22,7 +22,23 @@ GRANT select, update, insert, delete ON ephemeralSecrets.* TO 'ephemeralappuser'
 DROP USER 'root'@'%';
 
 
-CREATE EVENT myevent
-    ON SCHEDULE EVERY 1 MINUTE
+
+/*
+create events to Set the flag to inactive after a record is expired and then scrub the password and secret value  
+*/
+    CREATE EVENT FlagSetter
+    ON SCHEDULE EVERY 1 second
     DO
-      UPDATE ephemeralSecrets.user_secret SET active = 'false' WHERE expiry_date > NOW();
+          
+      UPDATE ephemeralSecrets.user_secret 
+      SET active = '0' 
+      WHERE expiry < now(); 
+
+
+    CREATE EVENT SecretScrubber
+    ON SCHEDULE EVERY 1 second
+    DO
+
+      UPDATE ephemeralSecrets.user_secret 
+      SET secret = '0', password = '0'
+      WHERE active = 0;
