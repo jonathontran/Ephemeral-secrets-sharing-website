@@ -165,11 +165,11 @@ def retrieveSecret(code):
     row = select_row(connection,code)
     close_connection(connection)
 
-    #validate code to be exactly 6 characters, and exists in the database
-    if len(code) == 6 and row is not None:
-        return render_template("retrieveSecret.html", code=code)
-    elif row is not None and row[6] != '1':
+    #validate code to be exactly 6 characters, and exists in the database, and is not expired
+    if row is not None and row[6] != 1:
         return render_template("retrieveSecret.html", code=code, invalidCode="Code has expired")
+    elif row is not None and len(code) == 6:
+        return render_template("retrieveSecret.html", code=code)
     else:
         return render_template("retrieveSecret.html", code=code, invalidCode="Invalid Code - please try again")
     
@@ -180,13 +180,17 @@ def retrieveSecret(code):
 def viewSecret():
     code = request.args.get('code')
     pw = request.form.get('password')
+    if pw is None:
+        return redirect(url_for("home"))
 
     connection = create_connection()
     row = select_row(connection,code)
     close_connection(connection)
 
-    #validate code to be exactly 6 characters, and exists in the database
-    if not (len(code) == 6 and row is not None):
+    #validate code to be exactly 6 characters, and exists in the database, and is not expired
+    if row is not None and row[6] != 1:
+        return redirect(url_for("retrieveSecret", code=code))
+    elif not (row is not None and len(code) == 6):
         return redirect(url_for("retrieveSecret",code=code))
 
     secret = ''
