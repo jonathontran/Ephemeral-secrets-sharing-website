@@ -29,13 +29,13 @@ To install and run Ephemeral Secrets, [Docker](https://docs.docker.com/engine/in
     `cd Ephemeral-secrets-sharing-website`
 3. Run Docker
 
-   Installation
-    `docker-compose pull`
+   Installation:
+    `docker-compose pull`<br />
     `docker-compose up --build -d`
    
    General use:
-    `docker-compose rm -f`
-    `docker-compose pull`
+    `docker-compose rm -f`<br />
+    `docker-compose pull`<br />
     `docker-compose up --build -d`
 
 5. Once Docker finishes provision the app, you can open a web browser and navigate to [localhost](https://localhost)
