@@ -29,11 +29,11 @@ To install and run Ephemeral Secrets, [Docker](https://docs.docker.com/engine/in
     `cd Ephemeral-secrets-sharing-website`
 3. Run Docker
 
-   Installation:
+   Installation:<br />
     `docker-compose pull`<br />
     `docker-compose up --build -d`
    
-   General use:
+   General use:<br />
     `docker-compose rm -f`<br />
     `docker-compose pull`<br />
     `docker-compose up --build -d`
