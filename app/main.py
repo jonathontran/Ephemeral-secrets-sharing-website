@@ -153,12 +153,14 @@ def submitConfirmation():
 @app.route('/submitCode', methods=['POST'])
 def submitCode():
     code = request.form['secretCode']
-
+    if not code.isalnum():
+            abort(404)
+            
     return redirect(code)
 
 @app.route('/<code>', methods=['GET','POST'])
 def retrieveSecret(code):
-    if code == 'favicon.ico':
+    if not code.isalnum():
         abort(404)
     
     connection = create_connection()
@@ -221,6 +223,9 @@ def ratelimit_handler(e):
     code = request.referrer.split('/')[-1].split('=')[-1]
     return render_template("retrieveSecret.html", code=code, error="Too many attempts, try again later.")
 
+@app.errorhandler(404)
+def error404(e):
+    return render_template("retrieveSecret.html", code='', invalidCode="Invalid Code - please try again")
 
 #Home Page
 @app.route('/')

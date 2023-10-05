@@ -32,18 +32,27 @@ function getDateFormatted(date) {
 window.onload = function() {
     // Hide the alert
     $("#expiryAlert").hide();
+    $("#yearAlert").hide();
     fillPassword();
     fillDate();
 }
 
 // This function is run when the form is submitted.
-function checkForPastDate() {
+function checkDate() {
     // Rehide the alert so that the alert is only shown when there is a problem with the entered expiry date
     $("#expiryAlert").hide();
     
     var inputDate = new Date(document.getElementById("expiryDate").value);
     var currentDate = new Date();
     
+    // Check if the year is more than 4 digits
+    var year = inputDate.getFullYear();
+    if(year.toString().length > 4){
+        $("#yearAlert").show();
+        return false;
+    }
+
+    // Double check if the date is in the past
     if(inputDate < currentDate){
         $("#expiryAlert").show();
         return false;

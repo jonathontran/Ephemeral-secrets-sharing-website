@@ -35,7 +35,7 @@
       <div class="col">
         <h1 id="ephemeralSecretsLargeHeading">EPHEMERAL SECRETS</h1>
         <!-- Form needs to be amdended in order to submit to the server -->
-        <form method="POST" action="/submit">
+        <form method="POST" action="/submit"  onsubmit="return checkDate()">
           <!-- Paste Secret Box -->
           <div class="card">
             <div class="card-body">
@@ -54,13 +54,18 @@
           </div>
 
           <!-- Alert is hidden when the page loads thanks to jQuery -->
-          <div class="alert alert-warning" role="alert" id="expiryAlert">
+          <div class="alert alert-warning" role="alert" id="expiryAlert" style="display:none;">
             Please enter a future date for the secret to expire.
+          </div>
+
+          <!-- Alert is hidden when the page loads thanks to jQuery -->
+          <div class="alert alert-warning" role="alert" id="yearAlert" style="display:none;">
+            Please enter a 4-digit year.
           </div>
 
           <!-- Submit Button -->
           <div class="d-grid gap-2">
-            <button class="btn btn-primary" type="submit" onsubmit="checkForPastDate()">SUBMIT</button>
+            <button class="btn btn-primary" type="submit">SUBMIT</button>
           </div>
         </form>
         <div class="circle"></div>
