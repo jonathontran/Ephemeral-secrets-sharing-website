@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, session, abort
+#Import required modules from libraries
+from flask import Flask, render_template, request, redirect, url_for, abort
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -12,14 +13,13 @@ import os
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+#Create Flask app and initialise rate limiter
 app = Flask(__name__)
 limiter = Limiter(app=app, key_func=get_remote_address)
 
-#SALT = base64.b64encode(b'GUDNQ5O70A0NQSXW')
-
-
-#DB functions - todo: error handling
+#Database methods
 def create_connection():
+    #Establish connection to database using environment variables
     connection = mysql.connector.connect(       
         user=os.environ.get("DB_USER"),    
         password=os.environ.get("DB_PASSWORD"),
@@ -34,12 +34,11 @@ def close_connection(connection):
 
 def insert_row(connection, url, expiry, password, SALT, secret, active):
     cursor = connection.cursor()
-    sql = "INSERT INTO user_secret (url, expiry, password, SALT, secret, active) VALUES (%s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO user_secret (url, expiry, password, SALT, secret, active) VALUES (%s, %s, %s, %s, %s, %s)" #Parameterisation to prevent SQL injection
     values = (url, expiry, password, SALT, secret, active)
     cursor.execute(sql, values)
     connection.commit()
     cursor.close()
-
 
 def select_row(connection, code):
     cursor = connection.cursor()
@@ -50,15 +49,8 @@ def select_row(connection, code):
     cursor.close()
     return row
 
-def delete_row(connection, url, password):
-    cursor = connection.cursor()
-    sql = "DELETE FROM user_secret WHERE url = %s AND password = %s"
-    values = (url, password)
-    cursor.execute(sql, values)
-    connection.commit()
-    cursor.close()
-
 def update_flag(connection,url):
+    #This is called after a secret is successfully accessed
     cursor = connection.cursor()
     sql = "UPDATE user_secret SET active = 0 WHERE url = %s"
     values = (url,)
@@ -69,14 +61,10 @@ def update_flag(connection,url):
 
 #Utility functions
 def create_code():
+    #Generate 6-character code
     characters = string.ascii_uppercase + string.digits
     code = ''.join(random.choice(characters) for i in range(6))
     return code
-
-def create_password(length=8): #UNUSED
-    characters = string.ascii_letters + string.digits + string.punctuation # All upper and lowercase letters, digits, and punctuation
-    password = ''.join(random.choice(characters) for i in range(length))
-    return password
 
 def hash(input):
     sha256_hash = hashlib.sha256()
@@ -106,7 +94,7 @@ def submit():
     connection = create_connection()
     while True:
         code = create_code() #generate random 6 character code
-        if select_row(connection,code) is None:
+        if select_row(connection,code) is None: #check that it is unique
             break
     close_connection(connection)
 
@@ -121,7 +109,7 @@ def submit():
     fernet = Fernet(key)
     secret = fernet.encrypt(str.encode(secret)) #convert secret to bytes and encrypt
 
-    #do DB stuff
+    #insert data into DB
     connection = create_connection()
     insert_row(connection,code,expiryDate,pwhash,plaintextSalt,secret.decode('utf-8'),1)
     close_connection(connection)
@@ -144,23 +132,18 @@ def submitConfirmation():
     
 
 
-
-
-
-
-
 #Secret Retreival
 @app.route('/submitCode', methods=['POST'])
 def submitCode():
     code = request.form['secretCode']
-    if not code.isalnum():
+    if not code.isalnum(): #check if not alphanumeric code
             abort(404)
-            
+
     return redirect(code)
 
 @app.route('/<code>', methods=['GET','POST'])
 def retrieveSecret(code):
-    if not code.isalnum():
+    if not code.isalnum(): #check if not alphanumeric code
         abort(404)
     
     connection = create_connection()
@@ -174,11 +157,9 @@ def retrieveSecret(code):
         return render_template("retrieveSecret.html", code=code)
     else:
         return render_template("retrieveSecret.html", code=code, invalidCode="Invalid Code - please try again")
-    
-    
 
 @app.route('/submitPassword', methods=['GET','POST'])
-@limiter.limit("3/minute")
+@limiter.limit("3/minute") #limit to 3 attempts per minute
 def viewSecret():
     code = request.args.get('code')
     pw = request.form.get('password')
@@ -208,7 +189,7 @@ def viewSecret():
     try:
         secret = fernet.decrypt(secret) 
         secret = secret.decode('utf-8') #back to string
-    except (InvalidToken, Exception):
+    except (InvalidToken, Exception): #if wrong password
         return render_template("retrieveSecret.html", code=code, error="Incorrect password.")
 
     #update active flag secret after retrieval
@@ -218,12 +199,12 @@ def viewSecret():
 
     return render_template("viewSecret.html", secret=secret,code=code)
 
-@app.errorhandler(429)
+@app.errorhandler(429) #rate limit error
 def ratelimit_handler(e):
-    code = request.referrer.split('/')[-1].split('=')[-1]
+    code = request.referrer.split('/')[-1].split('=')[-1] #retain the code from previous pages
     return render_template("retrieveSecret.html", code=code, error="Too many attempts, try again later.")
 
-@app.errorhandler(404)
+@app.errorhandler(404) #invalid URL
 def error404(e):
     return render_template("retrieveSecret.html", code='', invalidCode="Invalid Code - please try again")
 
